@@ -1,0 +1,76 @@
+# Finding Longest common substring by making even odd pairs
+
+def get_longest_common_substring(record1,record2):
+    # Import pairwise2 module
+    from Bio import pairwise2
+
+    # Import format_alignment method
+    from Bio.pairwise2 import format_alignment
+
+    # Define two sequences to be aligned
+    X = record1
+    Y = record2
+
+    # Get a list of the global alignments between the two sequences ACGGGT and ACG
+    # No parameters. Identical characters have score of 1, else 0.
+    # No gap penalties.
+    alignments = pairwise2.align.localxx(X, Y)
+    alignment_last = []
+    alignmentA = ""
+    alignmentB = ""
+    if(alignments): #In Python, empty lists evaluate to False and non-empty lists evaluate to True in boolean contexts. 
+        alignment_last = alignments[-1]
+        alignmentA = alignment_last[0]
+        alignmentB = alignment_last[1]
+    # Use format_alignment method to format the alignments in the list
+    #for a in alignments:
+    #    print(format_alignment(*a))
+
+    longest_substring = ""
+    current_substring = ""
+
+    for i in range(len(alignmentA)):
+        if(alignmentA==alignmentB):
+            longest_substring = alignmentA
+            break        
+     #   print("longest_substring",i,": ",longest_substring)
+      #  print("current_substring: ",current_substring,"\n\n")n
+        if(alignmentA[i]=='-' or alignmentB[i]=='-'):
+            if(len(longest_substring)<len(current_substring)):
+                longest_substring = current_substring
+            current_substring = ""
+        elif(alignmentA[i]==alignmentB[i]):
+            current_substring = current_substring + alignmentA[i]
+    #print("longest_substring: ",longest_substring)
+    return longest_substring
+
+
+
+
+
+
+next cell
+
+all_longest_substring_list = [] 
+def even_odd_LCS_generator(x):
+    if(len(x)==1):
+        return x[0]
+    left = even_odd_LCS_generator(x[::2])
+    right= even_odd_LCS_generator(x[1::2])
+    longest_substring = get_longest_common_substring(left,right)
+    all_longest_substring_list.append(longest_substring)
+    return longest_substring
+
+
+
+
+next cell
+
+
+count = 1
+for i in range(len(all_longest_substring_list)):
+    for j in range(i+1,len(all_longest_substring_list)):
+               if(all_longest_substring_list[i]==all_longest_substring_list[j] and all_longest_substring_list[i] !='' ):
+                   count = count + 1
+    print(all_longest_substring_list[i]," count: ",count)
+    count = 1
